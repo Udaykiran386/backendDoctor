@@ -1,5 +1,6 @@
 package com.doctor.doctor.service;
 
+import com.doctor.doctor.dto.LogInDto;
 import com.doctor.doctor.dto.RegisterDto;
 import com.doctor.doctor.mapper.RegisterMapper;
 import com.doctor.doctor.model.Register;
@@ -34,8 +35,15 @@ public class RegisterServiceImp implements RegisterService{
     public RegisterDto findByEmail(String registerEmail) {
         Optional<Register> optionalRegister=registerRepo.findByEmail(registerEmail);
         Register register=optionalRegister.get();
-        RegisterDto registerDto=registerMapper.toregisterDto(register);
+        RegisterDto registerDto=registerMapper.toregisterDtos(register);
         return registerDto;
+    }
+
+    @Override
+    public RegisterDto login(LogInDto logInDto) {
+        Optional<Register> register=registerRepo.findByEmailAndPassword(logInDto.getEmail(),logInDto.getPassword());
+        return registerMapper.toregisterDto(register.get());
+
     }
 
 

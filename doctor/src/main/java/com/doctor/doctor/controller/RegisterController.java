@@ -42,15 +42,18 @@ public class RegisterController {
         }
     }
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody LogInDto logInDto){
-        Optional<Register> optionalRegister=registerRepo.findByEmailAndPassword(logInDto.getEmail(),logInDto.getPassword());
-        if(optionalRegister.isPresent()){
-//            RegisterDto registerDto=registerMapper.registerDto(optionalRegister.get());
-            return ResponseEntity.status(HttpStatus.OK).body("Login Successfull   ");
+
+    public ResponseEntity<?> login(@RequestBody LogInDto logInDto) {
+        Optional<Register> optionalRegister = registerRepo.findByEmailAndPassword(logInDto.getEmail(), logInDto.getPassword());
+
+        if (optionalRegister.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password. Please create an account.");
         }
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body("create an account");
-        }
+
+        // Convert Register to RegisterDto using the mapper
+        RegisterDto registerDto = registerMapper.toregisterDto(optionalRegister.get());
+
+        return ResponseEntity.ok(registerDto);
     }
 
     @GetMapping("getByEmail/{registerEmail}")
